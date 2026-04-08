@@ -9,12 +9,10 @@ const UserSchema = new mongoose.Schema(
         },
         age: {
             type: mongoose.SchemaTypes.Int32,
-            required: true,
             min: [16, "Kamida 16 yosh bo'lishi kerak"],
         },
         email: {
             type: mongoose.SchemaTypes.String,
-            required: true,
         },
         username: {
             type: mongoose.SchemaTypes.String,
@@ -26,10 +24,14 @@ const UserSchema = new mongoose.Schema(
             type: mongoose.SchemaTypes.String,
             required: true,
         },
+        role: {
+            type: mongoose.SchemaTypes.String,
+        },
         profile_image: {
             type: mongoose.SchemaTypes.String,
             default: null,
         },
+
     },
     {
         versionKey: false,

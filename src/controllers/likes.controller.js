@@ -1,3 +1,4 @@
+import { ForbiddenException } from "../exceptions/forbidden.exception.js";
 import { Like } from "../models/likes.model.js";
 
 class LikeController {
@@ -22,11 +23,16 @@ class LikeController {
     }
 
     deleteLike = async (req, res) => {
+        const user = req.user;
         const {id} = req.params;
 
-        await this.#_likeModel.deleteOne({_id: id});
+        const foundedLike = this.#_likeModel.findById(id);
 
-        const count = this.#_likeModel
+        if(user.role !== "ADMIN" && foundedLike.user_id !== user.id){
+            throw new ForbiddenException("You can only delete your like")
+        }
+
+        await this.#_likeModel.deleteOne({_id: id});
 
         res.status(200).send({
             success: true,

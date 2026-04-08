@@ -1,3 +1,4 @@
+import { ForbiddenException} from "../exceptions/forbidden.exception.js";
 import { Comment } from "../models/coments.model.js";
 
 class CommentController {
@@ -32,7 +33,14 @@ class CommentController {
     }
 
     deleteComment = async (req, res) => {
+        const user = req.user;
         const {id} = req.params;
+
+        const foundedComment = this.#_commentModel.findById(id);
+
+        if(user.role !== "ADMIN" && foundedComment.user_id !== user.id){
+            throw new ForbiddenException("You can only delete your comment")
+        }
 
         await this.#_commentModel.deleteOne({_id: id});
 

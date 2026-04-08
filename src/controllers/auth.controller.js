@@ -27,8 +27,8 @@ class AuthController {
             throw new ConflictRequestException("Given password invalid");
         }
 
-        const accessToken = this.#generateToken({id: existingUser.id});
-        const refreshToken = this.#generateRefreshToken({id: existingUser.id});
+        const accessToken = this.#generateToken({id: existingUser.id, role: existingUser.role});
+        const refreshToken = this.#generateRefreshToken({id: existingUser.id, role: existingUser.role});
 
         res.send({
             success: true,
@@ -52,11 +52,12 @@ class AuthController {
             age,
             email,
             username,
-            password: hashedPass
+            password: hashedPass,
+            role: "USER"
         });
 
-        const accessToken = this.#generateToken({id: newUser.id});
-        const refreshToken = this.#generateToken({id: newUser.id});
+        const accessToken = this.#generateToken({id: newUser.id, role: newUser.role});
+        const refreshToken = this.#generateToken({id: newUser.id, role: newUser.role});
 
         res.send({
             success: true,
@@ -90,6 +91,32 @@ class AuthController {
         } catch (error) {
             next(error)
         }
+    }
+
+    seedAdmins = async () => {
+        const admins = [
+            {
+                name: "admin",
+                username: "admin1",
+                password: "123456",
+            }
+        ];
+
+        for(let a of admins) {
+            const existingUser = await this.#_userModel.findOne({
+                username: a.username,
+            });
+
+            if(!existingUser){
+                await this.#_userModel.insertOne({
+                    ...a,
+                    role: "ADMIN",
+                    password: await this.#hashPassword(a.password)
+                });
+            }
+        }
+
+        console.log("ADMIN SEEDED ✅")
     }
 
     #hashPassword = async (pass) => {

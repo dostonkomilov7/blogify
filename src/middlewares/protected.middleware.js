@@ -9,8 +9,6 @@ export const Protected = (isProtected = true) => {
 
         const {authorization} = req.headers;
 
-        console.log(authorization)
-
         if(!authorization){
             throw new BadRequestException("Token is not given")
         }

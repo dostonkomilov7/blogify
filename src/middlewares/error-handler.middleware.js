@@ -6,7 +6,6 @@ export const ErrorHandlerMiddleware = (err, req, res, next) => {
         });
     }
     console.log(err)
-
     res.status(500).send({
         success: false,
         message: "Internal Server Error"

@@ -7,9 +7,10 @@ const userRouter = Router();
 
 userRouter
     .get("/users", Protected(true), usersController.getAllUsers)
-    .get("/users/:id", usersController.getSingleUser)
-    .delete("/users/:id", usersController.deleteUser)
-    .post("/users/upload-photo/:id",
+    .get("/viewers", usersController.getAllUsers)
+    .get("/users/:id", Protected(true), usersController.getSingleUser)
+    .delete("/users/:id", Protected(true), usersController.deleteUser)
+    .post("/users/upload-photo/:id", Protected(true),
         upload.fields([
             {name: "image", maxCount: 1},
         ]), usersController.upload)

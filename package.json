@@ -1,5 +1,5 @@
 {
-  "name": "6-lesson",
+  "name": "8-lesson-homework",
   "version": "1.0.0",
   "description": "",
   "main": "src/main.js",
@@ -7,17 +7,25 @@
     "start": "node src/main.js",
     "start:dev": "nodemon src/main.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dostonkomilov7/homework-7.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
+  "bugs": {
+    "url": "https://github.com/dostonkomilov7/homework-7/issues"
+  },
+  "homepage": "https://github.com/dostonkomilov7/homework-7#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "dotenv": "^17.4.0",
+    "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "joi": "^18.1.2",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.3.3",
+    "mongoose": "^9.4.1",
     "multer": "^2.1.1"
   },
   "devDependencies": {
