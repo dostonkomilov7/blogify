@@ -45,13 +45,16 @@ class PostController {
 
     updatePost = async (req, res) => {
         const {id} = req.params;
-        const {title, content} = req.body;
+        const {title, content, created_by} = req.body;
 
         await this.#_postModel.updateOne(
             {_id: id},
             {
-                title,
-                content,
+            title,
+            content,
+            created_by,
+            image_url: `/uploads/${req.files.image[0].filename}`,
+            video_url: req.files?.video?.[0]?.filename ? `/uploads/${req.files?.video?.[0]?.filename}` : null
             }
         );
 

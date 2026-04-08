@@ -29,7 +29,6 @@ class UserController {
     upload = async (req, res) => {
         const {id} = req.params;
         const {image} = req.files;
-        console.log(image)
 
         await this.#_userModel.updateOne(
             {_id: id},
