@@ -10,12 +10,13 @@ class UserController {
     getAllUsers = async (req, res) => {
         const users = await this.#_userModel.find();
 
+        console.log(req.cookies);
+        console.log(req.signedCookies);
+
         res.send({
             success: true,
             users
         });
-
-        sendEmail("bakhtiyorovv9@gmail.com", "New post", "Hiiii Faxriddin");
     }
 
     getSingleUser = async (req, res) => {

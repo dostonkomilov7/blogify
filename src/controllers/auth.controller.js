@@ -18,7 +18,7 @@ class AuthController {
         const {username, password} = req.body;
 
         const existingUser = await this.#_userModel.findOne({username});
-
+ 
         if(!existingUser){
             throw new NotFoundException("User is not found")
         }
@@ -31,6 +31,16 @@ class AuthController {
 
         const accessToken = this.#generateToken({id: existingUser.id, role: existingUser.role});
         const refreshToken = this.#generateRefreshToken({id: existingUser.id, role: existingUser.role});
+
+        res.cookie("accessToken", accessToken, {
+            signed: true,
+            expires: new Date(Date.now() + 5000),
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            signed: true,
+            expires: new Date(Date.now() + 10000)
+        });
 
         res.send({
             success: true,
@@ -66,7 +76,6 @@ class AuthController {
             accessToken,
             refreshToken
         });
-
     }
 
     refresh = async (req, res, next) => {

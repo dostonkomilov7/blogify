@@ -3,11 +3,14 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { NotFoundException } from "../exceptions/not-found.exception.js";
 import { ForbiddenException } from "../exceptions/forbidden.exception.js";
+import { PostView } from "../models/post-views.model.js";
 
 class PostController {
     #_postModel;
+    #_postViewModel;
     constructor() {
         this.#_postModel = Post;
+        this.#_postViewModel = PostView;
     }
 
     getAllPosts = async (req, res, next) => {
@@ -20,12 +23,22 @@ class PostController {
     }
 
     getSinglePost = async (req, res, next) => {
-        const { id } = req.params;
+        const { id, user_id } = req.params;
 
         const post = await this.#_postModel.find({ _id: id });
 
+        await this.#_postViewModel.insertOne({
+            post_id: id,
+            user_id: user_id
+        });
+
+        const viewCount = await this.#_postViewModel.countDocuments({post_id: id})
+
+        console.log(post._doc)
+
         res.send({
             success: true,
+            views: viewCount,
             post
         });
     }

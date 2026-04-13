@@ -44,7 +44,7 @@ class CommentController {
         });
         // foundedUser.email
         sendEmail(
-            "dostonkomilov070@gmail.com", 
+            "dostonkomilov070@gmail.com",
             "You have a new comment 📨",
             `<html>
             <head>
