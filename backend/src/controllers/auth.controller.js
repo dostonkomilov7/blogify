@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { UAParser } from "ua-parser-js";
 import { User } from "../models/users.model.js";
 import jwtConfig from "../configs/jwt.config.js";
 import { NotFoundException } from "../exceptions/not-found.exception.js";
@@ -7,11 +8,14 @@ import { BadRequestException } from "../exceptions/bad-request.exception.js";
 import { ConflictRequestException } from "../exceptions/conflict-request.exception.js";
 import signature from "../configs/signed.js";
 import { sendEmail } from "../helpers/mail.helper.js";
+import { Device } from "../models/devices.model.js";
 
 class AuthController {
     #_userModel;
+    #_deviceModel;
     constructor() {
         this.#_userModel = User
+        this.#_deviceModel = Device
     };
 
     login = async (req, res) => {
@@ -29,8 +33,33 @@ class AuthController {
             throw new ConflictRequestException("Given password invalid");
         }
 
-        const accessToken = this.#generateToken({id: existingUser.id, role: existingUser.role});
-        const refreshToken = this.#generateRefreshToken({id: existingUser.id, role: existingUser.role});
+        const ua = new UAParser(req.headers["user-agent"]);
+        const device = ua.getResult();
+
+        const foundedUserId = await this.#_deviceModel.aggregate([
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "userData"
+                }
+            }
+        ])
+
+        const solidId = foundedUserId[0].user_id.toString().split("'")[0];
+
+        await this.#_deviceModel.updateOne(
+            {user_id: solidId},
+            {
+                device_name: device.device.model || device.device.vendor,
+                device_type: device.device.type || "desktop",
+                user_agent: req.headers["user-agent"],
+            }
+        );
+
+        const accessToken = this.#generateToken({id: existingUser.id, role: existingUser.role, device: device.device.model});
+        const refreshToken = this.#generateRefreshToken({id: existingUser.id, role: existingUser.role, device: device.device.model});
 
         res.cookie("accessToken", accessToken, {
             signed: true,
@@ -59,17 +88,29 @@ class AuthController {
 
         const hashedPass = await this.#hashPassword(password);
 
+        const ua = new UAParser(req.headers["user-agent"]);
+        const device = ua.getResult();
+
         const newUser = await this.#_userModel.insertOne({
             name,
             age,
             email,
             username,
             password: hashedPass,
-            role: "USER"
+            role: "USER",
+            device: device.device.model
         });
 
-        const accessToken = this.#generateToken({id: newUser.id, role: newUser.role});
-        const refreshToken = this.#generateToken({id: newUser.id, role: newUser.role});
+
+        await this.#_deviceModel.insertOne({
+            user_id: newUser.id,
+            device_name: device.device.model || device.device.vendor,
+            device_type: device.device.type || "desktop",
+            user_agent: req.headers["user-agent"],
+        });
+
+        const accessToken = this.#generateToken({id: newUser.id, role: newUser.role, device: device.device.model});
+        const refreshToken = this.#generateToken({id: newUser.id, role: newUser.role, device: device.device.model});
 
         res.send({
             success: true,

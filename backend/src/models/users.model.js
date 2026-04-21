@@ -32,7 +32,10 @@ const UserSchema = new mongoose.Schema(
             type: mongoose.SchemaTypes.String,
             default: null,
         },
-
+        device: {
+            type: mongoose.SchemaTypes.String,
+            required: true,
+        }
     },
     {
         versionKey: false,

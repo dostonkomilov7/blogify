@@ -1,0 +1,7 @@
+import "../CSS/home-page.style.css"
+import "../CSS/sign-page.style.css"
+import "../CSS/profile-page.style.css"
+import "../CSS/notification-page.style.css"
+import "../CSS/create-post-page.style.css"
+import "../CSS/post-details-page.style.css"
+import "../CSS/settings-page.style.css"
