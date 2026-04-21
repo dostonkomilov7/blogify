@@ -14,11 +14,6 @@ const UserSchema = new mongoose.Schema(
         email: {
             type: mongoose.SchemaTypes.String,
             required: true,
-        },
-        username: {
-            type: mongoose.SchemaTypes.String,
-            required: true,
-            min: [5, "Username kamida 5ta belgidan iborat bo'lishi kerak"],
             unique: true,
         },
         password: {

@@ -33,10 +33,10 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")))
 app.use("/public", express.static(path.join(process.cwd(), "src", "public")))
 
 connectDB()
-    .then((res) => console.log(res))
+    .then((res) => res)
     .catch((error) => console.log(error))
 
-await authController.seedAdmins();
+// await authController.seedAdmins();
 
 app.use("/", router);
 app.use("/api", apiRouter);

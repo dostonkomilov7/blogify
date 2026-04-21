@@ -19,9 +19,9 @@ class AuthController {
     };
 
     login = async (req, res) => {
-        const {username, password} = req.body;
+        const {email, password} = req.body;
 
-        const existingUser = await this.#_userModel.findOne({username});
+        const existingUser = await this.#_userModel.findOne({email});
  
         if(!existingUser){
             throw new NotFoundException("User is not found")
@@ -79,8 +79,8 @@ class AuthController {
     };
 
     register = async (req, res) => {
-        const {name, age, email, username, password} = req.body;
-        const existingUser = await this.#_userModel.findOne({username: username});
+        const {name, age, email, password} = req.body;
+        const existingUser = await this.#_userModel.findOne({username: email});
 
         if(existingUser){
             throw new BadRequestException("Username have already taken")
@@ -95,7 +95,6 @@ class AuthController {
             name,
             age,
             email,
-            username,
             password: hashedPass,
             role: "USER",
             device: device.device.model
@@ -149,14 +148,14 @@ class AuthController {
         const admins = [
             {
                 name: "admin",
-                username: "admin1",
+                email: "admin1@example.com",
                 password: "123456",
             }
         ];
 
         for(let a of admins) {
             const existingUser = await this.#_userModel.findOne({
-                username: a.username,
+                email: a.email,
             });
 
             if(!existingUser){

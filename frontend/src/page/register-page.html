@@ -3,15 +3,15 @@
 <head>
     <title>Blogify</title>
 </head>
-<body>
+<body style="background-color: white;">
     <main>
         <div class="login">
             <h1 class="left">Hello, <br>Create Account</h1>
             <p class="content left">Join us and start your journey</p>
-            <form>
-                <input type="text" placeholder="FullName" class="left"><br>
-                <input type="email" placeholder="Email" class="left"><br>
-                <input type="password" placeholder="Password" class="left"><br>
+            <form action="./api/auth/register" method="post">
+                <input type="text" placeholder="FullName" class="left" name="fullname"><br>
+                <input type="email" placeholder="Email" class="left" name="email"><br>
+                <input type="password" placeholder="Password" class="left" name="password"><br>
                 <input type="password" placeholder="Confirm Password" class="left"><br>
                 <input type="checkbox" name="agree" class="left">
                 <label for="agree" class="content">I agree to <span style="color: blueviolet;">Terms</span></label>
