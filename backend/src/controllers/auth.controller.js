@@ -19,17 +19,17 @@ class AuthController {
     };
 
     login = async (req, res) => {
-        const {email, password} = req.body;
+        const { email, password } = req.body;
 
-        const existingUser = await this.#_userModel.findOne({email});
- 
-        if(!existingUser){
+        const existingUser = await this.#_userModel.findOne({ email });
+
+        if (!existingUser) {
             throw new NotFoundException("User is not found")
         }
 
         const isPassSame = await this.#comparePassword(password, existingUser.password);
 
-        if(!isPassSame){
+        if (!isPassSame) {
             throw new ConflictRequestException("Given password invalid");
         }
 
@@ -50,7 +50,7 @@ class AuthController {
         const solidId = foundedUserId[0].user_id.toString().split("'")[0];
 
         await this.#_deviceModel.updateOne(
-            {user_id: solidId},
+            { user_id: solidId },
             {
                 device_name: device.device.model || device.device.vendor,
                 device_type: device.device.type || "desktop",
@@ -58,8 +58,8 @@ class AuthController {
             }
         );
 
-        const accessToken = this.#generateToken({id: existingUser.id, role: existingUser.role, device: device.device.model});
-        const refreshToken = this.#generateRefreshToken({id: existingUser.id, role: existingUser.role, device: device.device.model});
+        const accessToken = this.#generateToken({ id: existingUser.id, role: existingUser.role, device: device.device.model });
+        const refreshToken = this.#generateRefreshToken({ id: existingUser.id, role: existingUser.role, device: device.device.model });
 
         res.cookie("accessToken", accessToken, {
             signed: true,
@@ -79,10 +79,10 @@ class AuthController {
     };
 
     register = async (req, res) => {
-        const {name, age, email, password} = req.body;
-        const existingUser = await this.#_userModel.findOne({username: email});
+        const { name, age, username, email, password } = req.body;
+        const existingUser = await this.#_userModel.findOne({ username: email });
 
-        if(existingUser){
+        if (existingUser) {
             throw new BadRequestException("Username have already taken")
         }
 
@@ -95,6 +95,7 @@ class AuthController {
             name,
             age,
             email,
+            username,
             password: hashedPass,
             role: "USER",
             device: device.device.model
@@ -108,8 +109,8 @@ class AuthController {
             user_agent: req.headers["user-agent"],
         });
 
-        const accessToken = this.#generateToken({id: newUser.id, role: newUser.role, device: device.device.model});
-        const refreshToken = this.#generateToken({id: newUser.id, role: newUser.role, device: device.device.model});
+        const accessToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: device.device.model });
+        const refreshToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: device.device.model });
 
         res.send({
             success: true,
@@ -120,9 +121,9 @@ class AuthController {
 
     refresh = async (req, res, next) => {
         try {
-            const {refreshToken} = req.body;
+            const { refreshToken } = req.body;
 
-            if(!refreshToken){
+            if (!refreshToken) {
                 throw new BadRequestException("Token not given");
             }
 
@@ -131,7 +132,7 @@ class AuthController {
                 jwtConfig.REFRESH_KEY
             );
 
-            const accessToken = this.#generateToken({id: payload.id});
+            const accessToken = this.#generateToken({ id: payload.id });
 
             res.send({
                 success: true,
@@ -148,21 +149,33 @@ class AuthController {
         const admins = [
             {
                 name: "admin",
-                email: "admin1@example.com",
+                username: "admin1",
+                email: "admin777@example.com",
                 password: "123456",
             }
         ];
 
-        for(let a of admins) {
+        for (let a of admins) {
             const existingUser = await this.#_userModel.findOne({
                 email: a.email,
             });
 
-            if(!existingUser){
+            if (!existingUser) {
+                const ua = new UAParser(req.headers["user-agent"]);
+                const device = ua.getResult();
+
                 await this.#_userModel.insertOne({
                     ...a,
                     role: "ADMIN",
-                    password: await this.#hashPassword(a.password)
+                    password: await this.#hashPassword(a.password),
+                    device: device.device.model || device.device.vendor,
+                });
+
+                await this.#_deviceModel.insertOne({
+                    user_id: newUser.id,
+                    device_name: device.device.model || device.device.vendor,
+                    device_type: device.device.type || "desktop",
+                    user_agent: req.headers["user-agent"],
                 });
             }
         }
@@ -173,17 +186,17 @@ class AuthController {
     forgotPassword = async (req, res, next) => {
         try {
             const BASE_URL = process.env.BASE_URL;
-            const {email} = req.body;
+            const { email } = req.body;
 
-            const foundedUser = await this.#_userModel.findOne({email: email});
+            const foundedUser = await this.#_userModel.findOne({ email: email });
 
-            if(!foundedUser){
+            if (!foundedUser) {
                 throw new NotFoundException("User's is not found")
             }
 
             const signedUrl = signature.sign(
                 `${BASE_URL}/auth/reset-password?userId=${foundedUser.id}`,
-                {ttl: 300},
+                { ttl: 300 },
             );
 
             sendEmail(email, "Signed URL", signedUrl);
@@ -197,14 +210,14 @@ class AuthController {
 
     resetPassword = async (req, res, next) => {
         try {
-            const {userId} = req.query;
-            const {password} = req.body;
+            const { userId } = req.query;
+            const { password } = req.body;
 
             const hashedPass = await this.#hashPassword(password);
 
             await this.#_userModel.updateOne(
-                {_id: userId},
-                {password: hashedPass}
+                { _id: userId },
+                { password: hashedPass }
             );
 
             res.status(204).send();
@@ -226,7 +239,7 @@ class AuthController {
         return isSame
     };
 
-    #generateToken =  (payload) => {
+    #generateToken = (payload) => {
         const token = jwt.sign(
             payload,
             jwtConfig.SECRET_KEY,
@@ -239,7 +252,7 @@ class AuthController {
         return token
     };
 
-    #generateRefreshToken =  (payload) => {
+    #generateRefreshToken = (payload) => {
         const token = jwt.sign(
             payload,
             jwtConfig.REFRESH_KEY,

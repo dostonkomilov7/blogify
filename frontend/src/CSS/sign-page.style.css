@@ -51,9 +51,8 @@ input {
 }
 
 .lg_image img {
-    width: 110%;
+    width: 120%;
     height: 100%;
-    overflow: hidden;
     object-fit: cover;
     border-radius: 20px;
 }

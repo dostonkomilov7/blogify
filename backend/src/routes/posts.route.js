@@ -22,6 +22,6 @@ postRouter
       { name: "image", maxCount: 1 },
       { name: "video", maxCount: 1 },
     ]), postsController.updatePost)
-    .delete("/:id", postsController.deletePost)
+    .delete("/:id", Protected(true), postsController.deletePost)
 
 export default postRouter;
