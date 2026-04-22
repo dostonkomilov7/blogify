@@ -11,6 +11,7 @@ import { sendEmail } from "../helpers/mail.helper.js";
 import { Device } from "../models/devices.model.js";
 
 class AuthController {
+
     #_userModel;
     #_deviceModel;
     constructor() {
@@ -80,16 +81,18 @@ class AuthController {
 
     register = async (req, res) => {
         const { name, age, username, email, password } = req.body;
-        const existingUser = await this.#_userModel.findOne({ username: email });
+        const existingUser = await this.#_userModel.findOne({ email });
 
         if (existingUser) {
-            throw new BadRequestException("Username have already taken")
+            throw new BadRequestException("Email already taken")
         }
 
         const hashedPass = await this.#hashPassword(password);
 
         const ua = new UAParser(req.headers["user-agent"]);
         const device = ua.getResult();
+        const deviceName = device.device.model || device.device.vendor || device.os.name || "unknown";
+        const deviceType = device.device.type || "desktop";
 
         const newUser = await this.#_userModel.insertOne({
             name,
@@ -98,22 +101,30 @@ class AuthController {
             username,
             password: hashedPass,
             role: "USER",
-            device: device.device.model
+            device: deviceName
         });
 
 
         await this.#_deviceModel.insertOne({
             user_id: newUser.id,
-            device_name: device.device.model || device.device.vendor,
-            device_type: device.device.type || "desktop",
+            device_name: deviceName,
+            device_type: deviceType,
             user_agent: req.headers["user-agent"],
         });
 
-        const accessToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: device.device.model });
-        const refreshToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: device.device.model });
+        const accessToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: deviceName });
+        const refreshToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: deviceName });
 
         res.send({
             success: true,
+            user: {
+                name,
+                age,
+                email,
+                username,
+                role: "USER",
+                device: deviceName
+            },
             accessToken,
             refreshToken
         });
@@ -161,21 +172,10 @@ class AuthController {
             });
 
             if (!existingUser) {
-                const ua = new UAParser(req.headers["user-agent"]);
-                const device = ua.getResult();
-
                 await this.#_userModel.insertOne({
                     ...a,
                     role: "ADMIN",
                     password: await this.#hashPassword(a.password),
-                    device: device.device.model || device.device.vendor,
-                });
-
-                await this.#_deviceModel.insertOne({
-                    user_id: newUser.id,
-                    device_name: device.device.model || device.device.vendor,
-                    device_type: device.device.type || "desktop",
-                    user_agent: req.headers["user-agent"],
                 });
             }
         }

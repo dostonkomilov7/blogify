@@ -1,29 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Blogify</title>
-</head>
-<body style="background-color: white;">
+  </head>
+  <body style="background-color: white">
     <main>
-        <div class="login">
-            <h1 class="left">Hello, <br>Create Account</h1>
-            <p class="content left">Join us and start your journey</p>
-            <form action="./api/auth/register" method="post">
-                <input type="text" placeholder="FullName" class="left" name="fullname"><br>
-                <input type="email" placeholder="Email" class="left" name="email"><br>
-                <input type="password" placeholder="Password" class="left" name="password"><br>
-                <input type="password" placeholder="Confirm Password" class="left"><br>
-                <input type="checkbox" name="agree" class="left">
-                <label for="agree" class="content">I agree to <span style="color: blueviolet;">Terms</span></label>
-                <button class="btn">Sign Up</button>
-                <a href="/src/page/login-page.html" class="content left">Already have an account? <span style="color: blueviolet;">Sign In</span></a>
-            </form>
-        </div>
-        <div class="lg_image">
-            <img src="../assets/Register.png" alt="">
-        </div>
+      <div class="login">
+        <h1 class="left">Hello, <br />Create Account</h1>
+        <p class="content left">Join us and start your journey</p>
+        <form id="register-form">
+          <input type="text" placeholder="FullName" class="left" /><br />
+          <input type="email" placeholder="Email" class="left" /><br />
+          <input type="number" placeholder="age" class="left" /><br />
+          <input type="text" placeholder="username" class="left" /><br />
+          <input type="password" placeholder="Password" class="left" /><br />
+          <input type="checkbox" name="agree" class="left" />
+          <label for="agree" class="content"
+            >I agree to <span style="color: blueviolet">Terms</span></label
+          >
+          <button class="btn">Sign Up</button>
+          <a href="/src/page/login-page.html" class="content left"
+            >Already have an account?
+            <span style="color: blueviolet">Sign In</span></a
+          >
+        </form>
+      </div>
+      <div class="lg_image">
+        <img src="../assets/Register.png" alt="" />
+      </div>
     </main>
 
-    <script src="../JS/style.js" type="module"></script>
-</body>
+    <script src="../js/style.js" type="module"></script>
+    <script src="../js/register.js" type="module"></script>
+  </body>
 </html>

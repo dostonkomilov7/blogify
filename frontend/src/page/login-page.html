@@ -1,28 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Blogify</title>
-</head>
-<body style="background-color: white;">
+  </head>
+  <body style="background-color: white">
     <main>
-        <div class="login">
-            <h1 class="left">Hello, <br>Welcome Back</h1>
-            <p class="content left">Hey, welcome back to your special place</p>
-            <form action="./api/auth/login" method="post">
-                <input type="email" placeholder="Email" class="left" name="email"><br>
-                <input type="password" placeholder="Password" class="left" name="password"><br>
-                <input type="checkbox" name="remember" class="chbox left">
-                <label for="remember" class="content">Remember me</label>
-                <a href="/frontend/src/page/register.html" class="content left">Forgot Password ?</a><br>
-                <button class="btn">Sign In</button>
-                <a href="/src/page/register-page.html" class="content left">Don't have an account? <span style="color: blueviolet;">Sign Up</span></a>
-            </form>
-        </div>
-        <div class="lg_image">
-            <img src="../assets/Login.png" alt="">
-        </div>
+      <div class="login">
+        <h1 class="left">Hello, <br />Welcome Back</h1>
+        <p class="content left">Hey, welcome back to your special place</p>
+        <form action="./api/auth/login" method="post">
+          <input
+            type="email"
+            placeholder="Email"
+            class="left"
+            name="email"
+          /><br />
+          <input
+            type="password"
+            placeholder="Password"
+            class="left"
+            name="password"
+          /><br />
+          <input type="checkbox" name="remember" class="chbox left" />
+          <label for="remember" class="content">Remember me</label>
+          <a href="/frontend/src/page/register.html" class="content left"
+            >Forgot Password ?</a
+          ><br />
+          <button class="btn">Sign In</button>
+          <a href="/src/page/register-page.html" class="content left"
+            >Don't have an account?
+            <span style="color: blueviolet">Sign Up</span></a
+          >
+        </form>
+      </div>
+      <div class="lg_image">
+        <img src="../assets/Login.png" alt="" />
+      </div>
     </main>
 
-    <script src="../JS/style.js" type="module"></script>
-</body>
+    <script src="../js/style.js" type="module"></script>
+    <script type="module">
+      import { redirectIfAuth } from "../JS/main.js";
+      redirectIfAuth();
+    </script>
+  </body>
 </html>

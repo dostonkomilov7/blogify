@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema(
         },
         device: {
             type: mongoose.SchemaTypes.String,
-            required: true,
+            required: false,
         }
     },
     {
