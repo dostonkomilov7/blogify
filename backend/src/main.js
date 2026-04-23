@@ -21,15 +21,13 @@ app.use(cors({
     credentials: true,
 }));
 
-
-
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")))
 
 connectDB()
     .then((res) => res)
     .catch((error) => console.log(error))
 
-await authController.seedAdmins();
+// await authController.seedAdmins();
 
 app.use("/api", apiRouter);
 

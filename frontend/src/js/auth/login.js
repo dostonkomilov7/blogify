@@ -1,14 +1,14 @@
-import { setCookie, redirectIfAuth } from '../main.js';
+import { redirectIfAuth, setCookie } from "../main.js";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 redirectIfAuth();
 
-const register = async (name, email, username, age, password) => {
+const login = async (email, password) => {
     try {
-        const response = await fetch(`${apiUrl}/auth/register`, {
+        const response = await fetch(`${apiUrl}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, username, age, password })
+            body: JSON.stringify({  email, password })
         });
         return await response.json();
     } catch (error) {
@@ -16,16 +16,13 @@ const register = async (name, email, username, age, password) => {
     }
 };
 
-document.getElementById('register-form').addEventListener('submit', async (e) => {
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const fullName = e.target[0].value;
-    const email = e.target[1].value;
-    const age = Number(e.target[2].value);
-    const username = e.target[3].value;
-    const password = e.target[4].value;
+    const email = e.target[0].value;
+    const password = e.target[1].value;
 
-    const response = await register(fullName, email, username, age, password);
+    const response = await login(email, password);
 
     if (response?.success) {
         setCookie("accessToken", response.accessToken);

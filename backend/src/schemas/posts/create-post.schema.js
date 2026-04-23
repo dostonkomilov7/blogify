@@ -13,5 +13,5 @@ const validateObjectId = (value, helpers) => {
 export const createPostSchema = Joi.object({
     title: Joi.string().min(4).required(),
     content: Joi.string().min(10).required(),
-    created_by: Joi.string().custom(validateObjectId).required()
+    // created_by: Joi.string().custom(validateObjectId).required()
 }).required();

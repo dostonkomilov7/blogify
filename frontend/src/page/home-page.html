@@ -30,12 +30,16 @@
     </header>
     <div class="main">
       <section class="left-section">
-        <button class="home-btn base">
+        <a href="./home-page.html">
+          <button class="home-btn base">
           <i class="fa-regular fa-house"></i> Home
-        </button>
-        <button class="explore-btn base">
-          <i class="fa-regular fa-compass"></i> Explore
-        </button>
+          </button>
+        </a>
+        <a href="./home-page.html">
+          <button class="explore-btn base">
+            <i class="fa-regular fa-compass"></i> Explore
+          </button>
+        </a>
         <button class="bookmarks-btn base">
           <i class="fa-regular fa-bookmark"></i> Bookmarks
         </button>
@@ -56,7 +60,7 @@
         <button class="settings base">
           <i class="fa-regular fa-gear"></i> Settings
         </button>
-        <button class="out-btn">
+        <button class="out-btn" id="exit-btn">
           <i class="fa-regular fa-arrow-right-from-bracket"></i>Log out
         </button>
       </section>
@@ -109,8 +113,9 @@
     </div>
 
     <script src="../js/style.js" type="module"></script>
+    <script src="../js/home.js" type="module"></script>
     <script type="module">
-      import { redirectIfNotAuth } from "../js/main.js";
+      import { redirectIfNotAuth } from "../js/main.js"; 
       redirectIfNotAuth();
     </script>
   </body>

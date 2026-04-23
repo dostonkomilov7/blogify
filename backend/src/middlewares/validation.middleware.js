@@ -16,10 +16,10 @@ export const validationMiddleware = (schema, target = "body") => {
                 errorMessage = error.details?.map((err) => err.message).join("| ");
                 throw new BadRequestException(errorMessage)
             }
-    
+
             req[target] = value;
             next();
-            
+
         } catch (error) {
             next(error)
         }

@@ -74,13 +74,14 @@ class AuthController {
 
         res.send({
             success: true,
+            userId: existingUser._id,
             accessToken,
             refreshToken
         });
     };
 
     register = async (req, res) => {
-        const { name, age, username, email, password } = req.body;
+        const { name, age,  email, password, username } = req.body;
         const existingUser = await this.#_userModel.findOne({ email });
 
         if (existingUser) {
@@ -98,8 +99,8 @@ class AuthController {
             name,
             age,
             email,
-            username,
             password: hashedPass,
+            username,
             role: "USER",
             device: deviceName
         });
@@ -114,17 +115,20 @@ class AuthController {
 
         const accessToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: deviceName });
         const refreshToken = this.#generateToken({ id: newUser.id, role: newUser.role, device: deviceName });
+        
+        res.cookie("accessToken", accessToken, {
+            signed: true,
+            expires: new Date(Date.now() + 5000),
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            signed: true,
+            expires: new Date(Date.now() + 10000)
+        });
 
         res.send({
             success: true,
-            user: {
-                name,
-                age,
-                email,
-                username,
-                role: "USER",
-                device: deviceName
-            },
+            userId: newUser._id,
             accessToken,
             refreshToken
         });

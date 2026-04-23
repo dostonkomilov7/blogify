@@ -12,7 +12,7 @@ const postRouter = Router();
 postRouter
     .get("/", Protected(true), postsController.getAllPosts)
     .get("/:id/:user_id", Protected(true), postsController.getSinglePost)
-    .post("/", Protected(true), Role("USER", "ADMIN"), upload.fields([
+    .post("/", upload.fields([
         {name: "image", maxCount: 1},
         {name: "video", maxCount: 1},
         ]),

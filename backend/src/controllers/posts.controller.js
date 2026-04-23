@@ -45,14 +45,15 @@ class PostController {
 
     createPost = async (req, res, next) => {
         try {
-            const { title, content, created_by } = req.body;
+            const { title, content, image, created_by } = req.body;
+            // const { title, content, image } = req.body;
 
             await this.#_postModel.insertOne({
                 title,
                 content,
                 created_by,
                 image_url: `/uploads/${req.files.image[0].filename}`,
-                video_url: req.files?.video?.[0]?.filename ? `/uploads/${req.files?.video?.[0]?.filename}` : null
+                // video_url: req.files?.video?.[0]?.filename ? `/uploads/${req.files?.video?.[0]?.filename}` : null
             });
 
             res.status(201).send({

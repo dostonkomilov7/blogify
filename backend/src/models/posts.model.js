@@ -14,8 +14,9 @@ const PostSchema = new mongoose.Schema(
         image_url: {
             type: mongoose.SchemaTypes.String,
         },
-        video_url: {
+        saved: {
             type: mongoose.SchemaTypes.String,
+            default: null,
         },
         created_by: {
             type: mongoose.SchemaTypes.ObjectId,

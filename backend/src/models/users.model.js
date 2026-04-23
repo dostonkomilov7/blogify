@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema(
         },
         age: {
             type: mongoose.SchemaTypes.Int32,
-            min: [16, "Kamida 16 yosh bo'lishi kerak"],
+            min: [5, "Kamida 5 yosh bo'lishi kerak"],
         },
         email: {
             type: mongoose.SchemaTypes.String,
@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema(
             unique: true,
         },
         password: {
+            type: mongoose.SchemaTypes.String,
+            required: true,
+        },
+        username: {
             type: mongoose.SchemaTypes.String,
             required: true,
             unique: true,
